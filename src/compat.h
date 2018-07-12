@@ -117,13 +117,15 @@ char *strdup(char *s);
 #endif
 
 #ifdef HAVE_TM_GMTOFF
-#define TIMEZONE_OFFSET(foo) foo##->tm_gmtoff
+//#define TIMEZONE_OFFSET(foo) foo##->tm_gmtoff
+#define TIMEZONE_OFFSET(foo) (foo->tm_gmtoff)
 #else
 #define TIMEZONE_OFFSET(foo) timezone
 #endif
 
 #ifdef HAVE_TM_ZONE
-#define TIMEZONE(foo) foo##->tm_zone
+//#define TIMEZONE(foo) foo##->tm_zone
+#define TIMEZONE(foo) (foo->tm_zone)
 #else
 #define TIMEZONE(foo) *tzname
 #endif
