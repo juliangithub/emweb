@@ -628,7 +628,7 @@ int process_header_end(request * req)
         SQUASH_KA(req);
         return 0;               /* failure, close down */
     }
-
+	dlog_debug("req->pathname :%s  is_cgi:%d", req->pathname, req->is_cgi );
     if (req->method == M_POST) {
         req->post_data_fd = create_temporary_file(1, NULL, 0);
         if (req->post_data_fd == 0)
@@ -637,6 +637,7 @@ int process_header_end(request * req)
     }
 
     if (req->is_cgi) {
+		dlog_trace();
         return init_cgi(req);
     }
 

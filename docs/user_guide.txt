@@ -1,0 +1,15 @@
+#pre-installation
+
+apt-get install byacc flex
+
+cd src
+./configure
+make
+
+cd boa_asp_jquery
+#install mime.types/boa.conf/index.html
+./install.sh
+
+
+
+

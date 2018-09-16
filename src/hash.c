@@ -215,16 +215,26 @@ char *get_mime_type(char *filename)
     unsigned int hash;
 
     extension = strrchr(filename, '.');
+	
+	dlog_debug("filename%s   extension:%s", filename, extension);
 
-    if (!extension || *extension++ == '\0')
-        return default_type;
+    if (!extension || *extension++ == '\0'){
+		dlog_debug("filename%s   extension:%s", filename, extension);
+	    return default_type;
+	}
+    
 
     hash = get_mime_hash_value(extension);
     current = mime_hashtable[hash];
 
     while (current) {
+		dlog_debug("current->key:%s  extension:%s", current->key, extension);
         if (!strcmp(current->key, extension)) /* hit */
-            return current->value;
+		{
+			dlog_debug("current->value:%s", current->value);
+			return current->value;
+		}
+
         current = current->next;
     }
 

@@ -6,6 +6,8 @@ image/gif                       gif
 image/jpeg                      jpg jpeg jpe
 text/css                        css
 text/plain                      txt dat
+#embedded web server
+#application/x-httpd-cgi         cgi
 application/x-bzip2             bz2
 application/x-sh                sh h c
 application/rar                 rar

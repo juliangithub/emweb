@@ -51,6 +51,7 @@
 #include "defines.h"
 #include "globals.h"
 
+#include "dlog.h"
 /* alias */
 void add_alias(char *fakename, char *realname, int script);
 int translate_uri(request * req);

@@ -58,7 +58,7 @@ int main(int argc, char **argv)
         perror("umask");
         exit(1);
     }
-
+#ifndef DLOG_EN
     devnullfd = open("/dev/null", 0);
 
     /* make STDIN and STDOUT point to /dev/null */
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
     if (dup2(devnullfd, STDOUT_FILENO) == -1) {
         DIE("can't dup2 /dev/null to STDOUT_FILENO");
     }
-
+#endif
     /* but first, update timestamp, because log_error_time uses it */
     (void) time(&current_time);
 
