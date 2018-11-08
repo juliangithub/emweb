@@ -1,2 +1,4 @@
-# boa_asp_jquery
-software architecture(asp cgi jquery ajax ) self-household
+# embedded web server
+# background program base on BOA CGIC
+# front end base on jquery/ajax/ASP
+
