@@ -1,4 +1,4 @@
 # embedded web server
-# background program base on BOA CGIC
-# front end base on jquery/ajax/ASP
+1.  background program base on BOA CGIC
+2.  front end base on jquery/ajax/ASP
 
