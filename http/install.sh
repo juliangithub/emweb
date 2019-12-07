@@ -9,6 +9,6 @@ mkdir -p /etc/boa
 cp -rf boa.conf /etc/boa/
 cp -rf mime.types /etc/boa/
 mkdir -p /var/www
-cp -rf index.html /var/www
+cp -rf ../www/index.html /var/www
 mkdir -p /var/log/boa
 
