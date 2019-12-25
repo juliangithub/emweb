@@ -110,9 +110,21 @@ typedef struct cgiFormEntryStruct {
 /* The first form entry. */
 static cgiFormEntry *cgiFormEntryFirst;
 
-static cgiParseResultType cgiParseGetFormInput();
-static cgiParseResultType cgiParsePostFormInput();
-static cgiParseResultType cgiParsePostMultipartInput();
+//add by cqping
+
+web_env  cgi_env={{0},{0},{0}};
+
+#define CGI_ENV_SPLIT		'&'    
+static cgiParseResultType em_cgiParsePostStr (void);
+static int em_cgiParseEnvStr(const char *data, int length);
+
+static cgiParseResultType cgiParseGetFormInput(void);
+
+#if 0
+static cgiParseResultType cgiParsePostFormInput(void);
+#endif
+
+static cgiParseResultType cgiParsePostMultipartInput(void);
 static cgiParseResultType cgiParseFormInput(char *data, int length);
 static void cgiSetupConstants();
 static void cgiFreeResources();
@@ -228,6 +240,16 @@ int main(int argc, char *argv[]) {
 		CGICDEBUGEND
 #endif /* CGICDEBUG */
 		if (cgiStrEqNc(cgiContentType, "application/x-www-form-urlencoded")) {	
+          
+/*add by cqping for parse jquery post string*/
+			if (em_cgiParsePostStr() !=cgiParseSuccess){
+
+				cgiFreeResources();
+				return -1;
+			}
+/*add by cqping for parse jquery post string*/
+
+#if 0
 #ifdef CGICDEBUG
 			CGICDEBUGSTART
 			fprintf(dout, "Calling PostFormInput\n");
@@ -248,6 +270,8 @@ int main(int argc, char *argv[]) {
 			fprintf(dout, "PostFormInput succeeded\n");
 			CGICDEBUGEND	
 #endif /* CGICDEBUG */
+
+#endif
 		} else if (cgiStrEqNc(cgiContentType, "multipart/form-data")) {
 #ifdef CGICDEBUG
 			CGICDEBUGSTART
@@ -264,6 +288,11 @@ int main(int argc, char *argv[]) {
 				cgiFreeResources();
 				return -1;
 			}	
+            else
+            {
+                em_web_cgiUpload();
+                return 0;
+            }        
 #ifdef CGICDEBUG
 			CGICDEBUGSTART
 			fprintf(dout, "PostMultipartInput succeeded\n");
@@ -308,6 +337,7 @@ static void cgiGetenv(char **s, char *var){
 	}
 }
 
+#if 0
 static cgiParseResultType cgiParsePostFormInput() {
 	char *input;
 	cgiParseResultType result;
@@ -327,6 +357,7 @@ static cgiParseResultType cgiParsePostFormInput() {
 	free(input);
 	return result;
 }
+#endif
 
 /* 2.0: A virtual datastream supporting putback of 
 	enough characters to handle multipart boundaries easily.
@@ -1344,6 +1375,34 @@ cgiFormResultType cgiFormFileOpen(
 	return cgiFormSuccess;
 }
 
+cgiFormResultType em_cgiFormFileOpen(
+	char *name, cgiFilePtr *cfpp, char *tmpfile_name)
+{
+	cgiFormEntry *e;
+	cgiFilePtr cfp;
+	e = cgiFormEntryFindFirst(name);
+	if (!e) {
+		*cfpp = 0;
+		return cgiFormNotFound;
+	}
+	if (!strlen(e->tfileName)) {
+		*cfpp = 0;
+		return cgiFormNotAFile;
+	}
+	cfp = (cgiFilePtr) malloc(sizeof(cgiFile));
+	if (!cfp) {
+		*cfpp = 0;
+		return cgiFormMemory;
+	}
+	cfp->in = fopen(e->tfileName, "rb");
+    strncpy(tmpfile_name, e->tfileName, strlen(e->tfileName));
+	if (!cfp->in) {
+		free(cfp);
+		return cgiFormIO;
+	}
+	*cfpp = cfp;
+	return cgiFormSuccess;
+}
 cgiFormResultType cgiFormFileRead(
 	cgiFilePtr cfp, char *buffer, 
 	int bufferSize, int *gotP)
@@ -2593,3 +2652,86 @@ static void unitTestAssert(const int value, const char *message)
 }
 
 #endif
+
+/*add by cqping*/
+static cgiParseResultType em_cgiParsePostStr ()
+{
+    //post string
+    char *postReqContent = NULL;
+
+    if(0 == cgiContentLength)
+    {
+        return cgiParseIO;
+    }
+    postReqContent = (char *) malloc(cgiContentLength + 1);
+    if (NULL == postReqContent) 
+    {
+        return cgiParseMemory;
+    }
+
+
+    if (((int) fread(postReqContent, 1, cgiContentLength, cgiIn)) 
+        != cgiContentLength) 
+    {
+        free(postReqContent);
+        postReqContent = NULL;
+        return cgiParseIO;
+    }
+    else
+    {
+        postReqContent[cgiContentLength] = '\0';
+    }
+    
+    if (0 !=em_cgiParseEnvStr(postReqContent, cgiContentLength))
+    {
+        free(postReqContent);
+        postReqContent = NULL;
+        return cgiParseIO; 
+    }
+
+    free(postReqContent);
+    postReqContent = NULL;
+
+    return cgiParseSuccess;
+}
+
+static int em_cgiParseEnvStr(const char *data, int length)
+{
+    char * cp = NULL;
+    char * cp2 = NULL;
+
+    if ((cp =strstr(data, "formname:")) != NULL)
+    {
+        cp2 = (char*)&cgi_env.formname;
+        cp += strlen("formname:");
+        while(*cp != '&' )
+        {
+            *cp2++ = *cp++;
+        }
+        *cp2 = '\0';
+    }
+
+    if ((cp = strstr(data, "action:") )!= NULL)
+    {
+        cp2 = (char *)&cgi_env.action;
+        cp += strlen("action:");
+        while(*cp != '&' )
+        {
+            *cp2++ = *cp++;
+        }
+        *cp2 = '\0';
+    }
+
+    if ((cp = strstr(data, "argument:") )!= NULL)
+    {
+        cp2 = (char *)&cgi_env.argument;
+        cp += strlen("argument:");
+        while(*cp != '\0')
+        {
+            *cp2++ = *cp++;
+        }
+        *cp2 = '\0';
+    }
+
+    return 0;
+}

@@ -235,6 +235,8 @@ int init_get(request * req)
 
 int process_get(request * req)
 {
+	dlog_trace();
+
     int bytes_written;
     volatile int bytes_to_write;
 

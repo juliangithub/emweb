@@ -45,8 +45,8 @@
 #define dlog_warn(format, ...)   printf(HEAD DISPLAY_BLINK COLOR_BG_NONE COLOR_FT_YELLOW"Warning(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
 #define dlog_err(format, ...)   printf(HEAD DISPLAY_BLINK COLOR_BG_NONE COLOR_FT_RED"Error(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
 #ifdef DLOG_EN
-    #define dlog_trace()                  printf(HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_BLUE"(%s %s %d )" ENDL, __FILE__, __FUNCTION__, __LINE__)
-    #define dlog_debug(format, ...)   printf(HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_PURPLE"(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
+    #define dlog_trace()                  printf(HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_BLUE"Trace: (%s %s %d )" ENDL, __FILE__, __FUNCTION__, __LINE__)
+    #define dlog_debug(format, ...)   printf(HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_PURPLE"Debug:(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
     #define dlog_info(format, ...)   printf(HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_GREEN"Info:(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
 #else
     #define dlog_trace()

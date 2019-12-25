@@ -36,6 +36,8 @@
 
 int read_from_pipe(request * req)
 {
+	dlog_trace();
+
     int bytes_read, bytes_to_read =
         BUFFER_SIZE - (req->header_end - req->buffer);
 
@@ -102,6 +104,8 @@ int read_from_pipe(request * req)
 
 int write_from_pipe(request * req)
 {
+	dlog_trace();
+
     int bytes_written, bytes_to_write = req->header_end - req->header_line;
 
     if (bytes_to_write == 0) {

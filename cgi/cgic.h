@@ -44,6 +44,19 @@ extern char *cgiAccept;
 extern char *cgiUserAgent;
 extern char *cgiReferrer;
 
+
+//add by  cqping
+typedef struct
+{                      
+	char formname[256];
+	char action[256];
+	char argument[10000];
+} web_env;
+
+
+extern web_env  cgi_env;
+
+
 /* Cookies as sent to the server. You can also get them
 	individually, or as a string array; see the documentation. */
 extern char *cgiCookie;
@@ -166,6 +179,9 @@ typedef struct cgiFileStruct *cgiFilePtr;
 extern cgiFormResultType cgiFormFileOpen(
 	char *name, cgiFilePtr *cfpp);
 
+extern cgiFormResultType em_cgiFormFileOpen(
+	char *name, cgiFilePtr *cfpp, char *tmpfile_name);
+
 extern cgiFormResultType cgiFormFileRead(
 	cgiFilePtr cfp, char *buffer, int bufferSize, int *gotP);
 
@@ -202,7 +218,7 @@ typedef enum {
 extern cgiEnvironmentResultType cgiWriteEnvironment(char *filename);
 extern cgiEnvironmentResultType cgiReadEnvironment(char *filename);
 
-extern int cgiMain();
+extern int cgiMain(void);
 
 extern cgiFormResultType cgiFormEntries(
 	char ***ptrToStringArray);
@@ -232,6 +248,7 @@ cgiFormResultType cgiValueEscape(const char *s);
 	bytes in 'data'. Returns cgiFormIO in the event
 	of error, cgiFormSuccess otherwise. */
 cgiFormResultType cgiValueEscapeData(const char *data, int len);
+extern int em_web_cgiUpload(void);
 
 #ifdef __cplusplus
 }
