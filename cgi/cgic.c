@@ -115,7 +115,7 @@ static cgiFormEntry *cgiFormEntryFirst;
 web_env  cgi_env={{0},{0},{0}};
 
 #define CGI_ENV_SPLIT		'&'    
-static cgiParseResultType em_cgiParsePostStr (void);
+static cgiParseResultType cgiParsePostJSON (void);
 static int em_cgiParseEnvStr(const char *data, int length);
 
 static cgiParseResultType cgiParseGetFormInput(void);
@@ -242,7 +242,7 @@ int main(int argc, char *argv[]) {
 		if (cgiStrEqNc(cgiContentType, "application/x-www-form-urlencoded")) {	
           
 /*add by cqping for parse jquery post string*/
-			if (em_cgiParsePostStr() !=cgiParseSuccess){
+			if (cgiParsePostJSON() !=cgiParseSuccess){
 
 				cgiFreeResources();
 				return -1;
@@ -290,7 +290,7 @@ int main(int argc, char *argv[]) {
 			}	
             else
             {
-                em_web_cgiUpload();
+                web_cgiUpload();
                 return 0;
             }        
 #ifdef CGICDEBUG
@@ -2654,7 +2654,7 @@ static void unitTestAssert(const int value, const char *message)
 #endif
 
 /*add by cqping*/
-static cgiParseResultType em_cgiParsePostStr ()
+static cgiParseResultType cgiParsePostJSON ()
 {
     //post string
     char *postReqContent = NULL;

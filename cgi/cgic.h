@@ -248,7 +248,7 @@ cgiFormResultType cgiValueEscape(const char *s);
 	bytes in 'data'. Returns cgiFormIO in the event
 	of error, cgiFormSuccess otherwise. */
 cgiFormResultType cgiValueEscapeData(const char *data, int len);
-extern int em_web_cgiUpload(void);
+extern int web_cgiUpload(void);
 
 #ifdef __cplusplus
 }

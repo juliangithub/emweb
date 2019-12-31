@@ -380,6 +380,11 @@ static void free_request(request ** list_head_addr, request * req)
 
 void process_requests(int server_s)
 {
+	/*Add by cqping for study status unit*/
+	char status_str[][32]={"read_header", "read_header", "read_header", "read_header",
+					"read_body","write_body", "write", "PIPE READ", "PEPR_WRITE", "DONE", "DEAD!!!"
+				};
+
     int retval = 0;
     request *current, *trailer;
 
@@ -412,6 +417,7 @@ void process_requests(int server_s)
                 retval = 1;
             }
         } else {
+        	dlog_debug("status: [%d] (%s)" ,current->status, status_str[current->status]);
             switch (current->status) {
             case READ_HEADER:
             case ONE_CR:

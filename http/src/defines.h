@@ -139,6 +139,7 @@
 #define DONE			9
 #define DEAD                   10
 
+
 /************** CGI TYPE (req->is_cgi) ******************/
 
 #define CGI                     1

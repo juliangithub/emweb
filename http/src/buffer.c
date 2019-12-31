@@ -171,7 +171,6 @@ int req_write_escape_html(request * req, char *msg)
 
 int req_flush(request * req)
 {
-	dlog_trace();
 
     int bytes_to_write;
 

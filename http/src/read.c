@@ -38,7 +38,6 @@
 
 int read_header(request * req)
 {
-dlog_trace();
     int bytes, buf_bytes_left;
     char *check, *buffer;
 
@@ -273,7 +272,6 @@ dlog_trace();
 
 int read_body(request * req)
 {
-	dlog_trace();
 
     int bytes_read, bytes_to_read, bytes_free;
 
@@ -335,7 +333,6 @@ int read_body(request * req)
 
 int write_body(request * req)
 {
-	dlog_trace();
 
     int bytes_written, bytes_to_write = req->header_end - req->header_line;
     if (req->filepos + bytes_to_write > req->filesize)
