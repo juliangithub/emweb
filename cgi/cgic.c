@@ -290,7 +290,7 @@ int main(int argc, char *argv[]) {
 			}	
             else
             {
-                web_cgiUpload();
+                // web_cgiUpload();
                 return 0;
             }        
 #ifdef CGICDEBUG
