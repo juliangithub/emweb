@@ -406,6 +406,7 @@ void process_requests(int server_s)
              * retval can be -2=error, -1=blocked, or bytes left
              */
             if (retval == -2) { /* error */
+				dlog_trace();
                 current->status = DEAD;
                 retval = 0;
             } else if (retval >= 0) {
@@ -447,6 +448,7 @@ void process_requests(int server_s)
                  * retval can be -2=error, -1=blocked, or bytes left
                  */
                 if (retval == -2) { /* error */
+					dlog_trace();
                     current->status = DEAD;
                     retval = 0;
                 } else if (retval > 0) {
@@ -457,6 +459,7 @@ void process_requests(int server_s)
                 retval = 0;
                 current->buffer_end = 0;
                 SQUASH_KA(current);
+				dlog_warn("status in DEAD !!! something abnormal !!!!!!");
                 break;
             default:
                 retval = 0;

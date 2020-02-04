@@ -66,6 +66,8 @@ int cgiContentLength;
 char *cgiAccept;
 char *cgiUserAgent;
 char *cgiReferrer;
+//add by cqping 
+cJSON *cgiJSONObject;
 
 FILE *cgiIn;
 FILE *cgiOut;
@@ -119,11 +121,7 @@ static cgiParseResultType cgiParsePostJSON (void);
 static int em_cgiParseEnvStr(const char *data, int length);
 
 static cgiParseResultType cgiParseGetFormInput(void);
-
-#if 0
 static cgiParseResultType cgiParsePostFormInput(void);
-#endif
-
 static cgiParseResultType cgiParsePostMultipartInput(void);
 static cgiParseResultType cgiParseFormInput(char *data, int length);
 static void cgiSetupConstants();
@@ -240,16 +238,6 @@ int main(int argc, char *argv[]) {
 		CGICDEBUGEND
 #endif /* CGICDEBUG */
 		if (cgiStrEqNc(cgiContentType, "application/x-www-form-urlencoded")) {	
-          
-/*add by cqping for parse jquery post string*/
-			if (cgiParsePostJSON() !=cgiParseSuccess){
-
-				cgiFreeResources();
-				return -1;
-			}
-/*add by cqping for parse jquery post string*/
-
-#if 0
 #ifdef CGICDEBUG
 			CGICDEBUGSTART
 			fprintf(dout, "Calling PostFormInput\n");
@@ -271,7 +259,6 @@ int main(int argc, char *argv[]) {
 			CGICDEBUGEND	
 #endif /* CGICDEBUG */
 
-#endif
 		} else if (cgiStrEqNc(cgiContentType, "multipart/form-data")) {
 #ifdef CGICDEBUG
 			CGICDEBUGSTART
@@ -298,6 +285,20 @@ int main(int argc, char *argv[]) {
 			fprintf(dout, "PostMultipartInput succeeded\n");
 			CGICDEBUGEND	
 #endif /* CGICDEBUG */
+		}
+		else if (cgiStrEqNc(cgiContentType, "application/json")) {	
+//			fprintf(stderr, "cgiContentLength: %d\n", cgiContentLength);
+			CGIC_DLOG("cgiContentLength: %d\n", cgiContentLength);
+			CGIC_DLOG("cgiRequestMethod: %s\n", cgiRequestMethod);
+			CGIC_DLOG("cgiContentType: %s\n", cgiContentType);
+	
+/*add by cqping for parse jquery post string*/
+			if (cgiParsePostJSON() !=cgiParseSuccess){
+
+				cgiFreeResources();
+				return -1;
+			}
+/*add by cqping for parse jquery post string*/
 		}
 	} else if (cgiStrEqNc(cgiRequestMethod, "get")) {	
 		/* The spec says this should be taken care of by
@@ -326,6 +327,13 @@ int main(int argc, char *argv[]) {
 	return 0;
 #else
 	result = cgiMain();
+
+//add by cqping.
+	if(cgiJSONObject != NULL){
+		cJSON_Delete(cgiJSONObject);
+		cgiJSONObject = NULL;
+	}
+	
 	return result;
 #endif
 }
@@ -337,7 +345,7 @@ static void cgiGetenv(char **s, char *var){
 	}
 }
 
-#if 0
+
 static cgiParseResultType cgiParsePostFormInput() {
 	char *input;
 	cgiParseResultType result;
@@ -357,7 +365,7 @@ static cgiParseResultType cgiParsePostFormInput() {
 	free(input);
 	return result;
 }
-#endif
+
 
 /* 2.0: A virtual datastream supporting putback of 
 	enough characters to handle multipart boundaries easily.
@@ -1243,6 +1251,11 @@ static void cgiFreeResources() {
 		we must set these correctly */
 	cgiFormEntryFirst = 0;
 	cgiRestored = 0;
+
+	if(cgiJSONObject != NULL){
+		cJSON_Delete(cgiJSONObject);
+		cgiJSONObject = NULL;
+	}
 }
 
 static cgiFormResultType cgiFormEntryString(
@@ -2681,13 +2694,16 @@ static cgiParseResultType cgiParsePostJSON ()
     {
         postReqContent[cgiContentLength] = '\0';
     }
-    
-    if (0 !=em_cgiParseEnvStr(postReqContent, cgiContentLength))
-    {
-        free(postReqContent);
-        postReqContent = NULL;
-        return cgiParseIO; 
-    }
+    cgiJSONObject = cJSON_Parse(postReqContent);
+	if(NULL == cgiJSONObject){
+		return cgiParseIO;
+	}
+//    if (0 !=em_cgiParseEnvStr(postReqContent, cgiContentLength))
+//    {
+//        free(postReqContent);
+//        postReqContent = NULL;
+//        return cgiParseIO; 
+//    }
 
     free(postReqContent);
     postReqContent = NULL;
@@ -2699,6 +2715,8 @@ static int em_cgiParseEnvStr(const char *data, int length)
 {
     char * cp = NULL;
     char * cp2 = NULL;
+
+	CGIC_DLOG("em_cgiParseEnvStr ==> data:\n %s\n", data);
 
     if ((cp =strstr(data, "formname:")) != NULL)
     {

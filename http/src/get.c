@@ -82,7 +82,7 @@ int init_get(request * req)
             }
             if (req->method == M_HEAD)
                 return 0;
-
+			dlog_trace();
             return init_cgi(req);
         }
     }
@@ -361,6 +361,7 @@ int get_dir(request * req, struct stat *statbuf)
             }
             if (req->method == M_HEAD)
                 return 0;
+			dlog_trace();
             return init_cgi(req);
         }
 #endif

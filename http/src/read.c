@@ -340,8 +340,11 @@ int write_body(request * req)
 
     if (bytes_to_write == 0) {  /* nothing left in buffer to write */
         req->header_line = req->header_end = req->buffer;
-        if (req->filepos >= req->filesize)
-            return init_cgi(req);
+        if (req->filepos >= req->filesize){
+			dlog_trace();
+			return init_cgi(req);
+		}
+            
         /* if here, we can safely assume that there is more to read */
         req->status = BODY_READ;
         return 1;

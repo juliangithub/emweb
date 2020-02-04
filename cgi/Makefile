@@ -1,25 +1,75 @@
-#WALL=-g -Wall -Waggregate-return -Wmissing-declarations  -Wmissing-prototypes -Wredundant-decls -Wshadow -Wstrict-prototypes -Winline 
-#CPPFLAGS=-I../../target-install/message/usr/include
-#LDFLAGS=-L../../target-install/message/usr/lib -L../../target-install/nvram/usr/lib
-#LIBS= -lmessage -lcrypt -lnvram
-OBJ= cgic.o cgi_main.o 
 
-all: json.cgi
-#	echo $(shell pwd)
+CROSS = 
+CC = $(CROSS)gcc
+CXX = $(CROSS)g++
+MV = mv -f
+RM = rm -rf
+LN = ln -sf
 
-json.cgi: $(OBJ)
-	$(CC) $(CPPFLAGS) $(OBJ) -o json.cgi ${LDFLAGS} ${LIBS}
+DEBUG = 
+#WALL=-Wall -Waggregate-return -Wmissing-declarations  -Wmissing-prototypes -Wredundant-decls -Wshadow -Wstrict-prototypes -Winline 
+#CFLAGS = $(DEBUG) -Wall -c
+CFLAGS = $(DEBUG) 
+#SVN_REVISION = $(shell svn info |grep Revision|awk '{print $$2}') 
+REVISION = $(shell git rev-parse HEAD)
+CFLAGS  += -DREVISION="\"$(REVISION)"\"
 
-install:
-#	cp libcgic.a /usr/local/lib
-#	cp cgic.h /usr/local/include
-#	@echo libcgic.a is in /usr/local/lib. cgic.h is in /usr/local/include.
+TARGET = json.cgi
+ 
+TOP_PATH = $(shell pwd)
+SRC_PATH = $(TOP_PATH)
+
+#LIBS_DIR = $(subst cgi,libs,$(TOP_PATH))
+
+LIB_PATH = $(TOP_PATH)/libs/cJSON
+LIB_INC_PATH = $(TOP_PATH)/libs/cJSON
+LIBS=-static -lcjson
+#find -maxdepth 3 -mindepth 1 -type d | grep -v .git |grep -v .
+DIRS = $(shell find $(SRC_PATH) -maxdepth 0 -mindepth 0 -type d | grep -v .git )
+FILES = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
 
 
+##########################################################
+# srcs
+##########################################################
+#SRCS_CPP += $(foreach dir, $(DIRS), $(wildcard $(dir)/*.cpp))
+#SRCS_CC += $(foreach dir, $(DIRS), $(wildcard $(dir)/*.cc))
+SRCS_C += $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
+ 
+##########################################################
+# objs
+##########################################################
+#OBJS_CPP = $(patsubst %.cpp, %.o, $(SRCS_CPP))
+#OBJS_CC = $(patsubst %.cc, %.o, $(SRCS_CC))
+OBJS_C = $(patsubst %.c, %.o, $(SRCS_C))
+ 
+##########################################################
+# paths
+##########################################################
+INC_PATH += -I$(LIB_INC_PATH)
+INC_PATH += -I$(SRC_PATH)
 
+LD_LIB += -L$(LIB_PATH)
+ 
+##########################################################
+# building
+##########################################################
+all: $(TARGET) 
+ 
+$(TARGET) : $(OBJS_C) 
+	@ $(CC) $^ -o $@ $(LD_LIB) $(LIBS)
+#	@ echo libs_dir: $(LIBS_DIR)
+	@ echo Create $(TARGET) ok...
 
+##########################################################
+# libs
+##########################################################
+# libs:
+# 	make -C $(LIB_PATH)
+
+$(OBJS_C):%.o : %.c
+	$(CC) -c $(CFLAGS) $< -o $@ $(INC_PATH)
+ 
+.PHONY : clean
 clean:
-	rm -rf *.o *.a json.cgi 
-	rm -f ../www/cgi-bin/json.cgi
-
-
+	@ $(RM) $(TARGET) $(OBJS_C)

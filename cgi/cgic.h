@@ -15,7 +15,7 @@ extern "C" {
 	types defined by it, such as FILE *. */
 
 #include <stdio.h>
-
+#include "cJSON.h"
 /* The various CGI environment variables. Instead of using getenv(),
 	the programmer should refer to these, which are always
 	valid null-terminated strings (they may be empty, but they 
@@ -46,6 +46,7 @@ extern char *cgiReferrer;
 
 
 //add by  cqping
+extern cJSON *cgiJSONObject;
 typedef struct
 {                      
 	char formname[256];
@@ -249,6 +250,16 @@ cgiFormResultType cgiValueEscape(const char *s);
 	of error, cgiFormSuccess otherwise. */
 cgiFormResultType cgiValueEscapeData(const char *data, int len);
 extern int web_cgiUpload(void);
+#if 0
+#define CGIC_DLOG(format, ...)   {\
+		FILE *dlog; \
+		dlog = fopen("/var/log/cgic/debug", "a"); \
+		fprintf(dlog, "Debug:(%s %d )"format, __FILE__, __LINE__,##__VA_ARGS__); \
+		fclose(dlog); \
+}
+#else
+#define CGIC_DLOG(format, ...)
+#endif
 
 #ifdef __cplusplus
 }

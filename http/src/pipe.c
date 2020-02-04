@@ -72,6 +72,7 @@ int read_from_pipe(request * req)
         else if (errno == EWOULDBLOCK || errno == EAGAIN)
             return -1;          /* request blocked at the pipe level, but keep going */
         else {
+			dlog_trace();
 	    req->status = DEAD;
             log_error_doc(req);
             perror("pipe read");
@@ -123,6 +124,7 @@ int write_from_pipe(request * req)
         else if (errno == EINTR)
             return 1;
         else {
+			dlog_trace();
             req->status = DEAD;
             send_r_error(req);  /* maybe superfluous */
             log_error_doc(req);

@@ -122,7 +122,9 @@ static void fdset_update(void)
         if (current->kacount < ka_max && /* we *are* in a keepalive */
             (time_since >= ka_timeout) && /* ka timeout */
             !current->logline)  /* haven't read anything yet */
-            current->status = DEAD; /* connection keepalive timed out */
+        	{
+				current->status = DEAD; /* connection keepalive timed out */
+			}
         else if (time_since > REQUEST_TIMEOUT) {
             log_error_doc(current);
             fputs("connection timed out\n", stderr);

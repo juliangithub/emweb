@@ -57,7 +57,7 @@ int process_cgi_header(request * req)
         req->cgi_status = CGI_BUFFER;
 
     buf = req->header_line;
-
+	dlog_debug("buf:%s\n", buf);
     c = strstr(buf, "\n\r\n");
     if (c == NULL) {
         c = strstr(buf, "\n\n");

@@ -12,7 +12,6 @@
 #ifndef _DLOG_H
 #define _DLOG_H
 #include <stdio.h>
-
 #define HEAD				"\e["// or "\033["
 #define DISPLAY_DEF			"0"
 #define DISPLAY_BOLD		"1"
@@ -41,7 +40,7 @@
 #define ENDL                 "\e[0m\n"
 
 
-#define DLOG_EN
+//#define DLOG_EN
 
 #define dlog_warn(format, ...)   printf(HEAD DISPLAY_BLINK COLOR_BG_NONE COLOR_FT_YELLOW"Warning(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
 #define dlog_err(format, ...)   printf(HEAD DISPLAY_BLINK COLOR_BG_NONE COLOR_FT_RED"Error(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
