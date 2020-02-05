@@ -26,8 +26,8 @@ int cgiMain(void)
 //	printf("[%s %s] file: %s line: %d \n", __DATE__, __TIME__, __FILE__, __LINE__);
 
 	char *json_str = cJSON_Print(cgiJSONObject);
-	REQ_MODE_T req_mode = REQ_GET;
-	RET_ERR_T ret = ERR_BADVALUE;
+	REQ_MODE_T req_mode = REQ_NOSPT;
+	RET_ERR_T ret = ERR_INVALID_VALUE;
 	char json_buf[2048] = {0};
 //	printf("%s", json_str);
 //	return 0;
@@ -35,26 +35,26 @@ int cgiMain(void)
 	if(NULL != json_str){
 		free(json_str);
 	}
-//	cJSON *p_req_mode = cJSON_GetObjectItem(cgiJSONObject, "req_mode");
-//	if(p_req_mode == NULL )
-//	{
-//		JSON_RET(ERR_BADVALUE);
-//		return -1;
-//	}
-//	dlog_debug("p_req_mode: %s \t", p_req_mode->valuestring);
-//	if(strcmp(p_req_mode->valuestring, "get")==0)
-//	{
-//		req_mode = REQ_GET;
-//	}
-//	else if(strcmp(p_req_mode->valuestring, "set")==0)
-//	{
-//		req_mode = REQ_SET;
-//	}
-//	else
-//	{	
-//		JSON_RET(ERR_WRONGTYPE);
-//		return -1;
-//	}
+	cJSON *p_req_mode = cJSON_GetObjectItem(cgiJSONObject, "req_mode");
+	if(p_req_mode == NULL )
+	{
+		JSON_RET(ERR_INVALID_VALUE);
+		return -1;
+	}
+	dlog_debug("p_req_mode: %s \n", p_req_mode->valuestring);
+	if(strcmp(p_req_mode->valuestring, "get")==0)
+	{
+		req_mode = REQ_GET;
+	}
+	else if(strcmp(p_req_mode->valuestring, "set")==0)
+	{
+		req_mode = REQ_SET;
+	}
+	else
+	{	
+		JSON_RET(ERR_INVALID_TYPE);
+		return -1;
+	}
 	switch(req_mode)
 	{
 		case REQ_GET:
@@ -79,6 +79,7 @@ int cgiMain(void)
 		default:
 			JSON_RET(ret);
 	}
+	fflush(stdout);
 
 	return 0;
 }

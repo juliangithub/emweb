@@ -17,5 +17,7 @@ mkdir -p /var/log/boa
 #install cgic module.
 mkdir -p /var/log/cgic
 cp -rf ${PWD}/cgi/json.cgi /var/www/json.cgi
-
+date
+echo "=================="
+stat ${PWD}/cgi/json.cgi
 

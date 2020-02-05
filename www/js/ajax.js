@@ -9,7 +9,7 @@ function get_lan_advance()
 	
 	var cpuUsed = 0;
 	var ramUsed = 0;
-	// var req_mode = "get";
+	var req_mode = "get";
 	var jsonObjGet = {
 
 				// "lan_ip":lan_ip,
@@ -17,7 +17,7 @@ function get_lan_advance()
 				// "start_ip":start_ip,
 				// "end_ip":end_ip,
 				// "leasetime":leasetime
-				// "req_mode":req_mode,
+				"req_mode":req_mode,
 				"cpuUsed":cpuUsed,
 				"ramUsed":ramUsed
 	};
@@ -37,7 +37,7 @@ function get_lan_advance()
 		success:function(jsonRet){
 			console.log(jsonRet);
 			var jsonStr = JSON.stringify(jsonRet);
-			$("#jsonRet").html(jsonStr);
+			$("#jsonRetGet").html(jsonStr);
 			// var jsonRet = {
 
 			// 	"lan_ip":"192.168.88.254",
@@ -72,24 +72,38 @@ function get_lan_advance()
 function set_lan_advance()
 {
 	
-	var lan_ip = $("#lan_ip").val();
-	var stip = new Array;
-	stip = lan_ip.split(".");										
-	var dhcpd_en = $("#dhcpd_en").attr("class").includes("switchoff") ? 0 : 2;
-	var start_ip= stip[0] + "." + stip[1] + "." + stip[2] + "." + $("#startip4").val();
-	var end_ip = stip[0] + "." + stip[1] + "." + stip[2] + "." + $("#endip4").val();
-	var leasetime = $("#leasetime").val() * 60;
+	// var lan_ip = $("#lan_ip").val();
+	// var stip = new Array;
+	// stip = lan_ip.split(".");										
+	// var dhcpd_en = $("#dhcpd_en").attr("class").includes("switchoff") ? 0 : 2;
+	// var start_ip= stip[0] + "." + stip[1] + "." + stip[2] + "." + $("#startip4").val();
+	// var end_ip = stip[0] + "." + stip[1] + "." + stip[2] + "." + $("#endip4").val();
+	// var leasetime = $("#leasetime").val() * 60;
 	
-	var jsonObjGet = {
+	// var jsonObjGet = {
 
-				"lan_ip":lan_ip,
-				"dhcpd_en":dhcpd_en,
-				"start_ip":start_ip,
-				"end_ip":end_ip,
-				"leasetime":leasetime,
-	};
+	// 			"lan_ip":lan_ip,
+	// 			"dhcpd_en":dhcpd_en,
+	// 			"start_ip":start_ip,
+	// 			"end_ip":end_ip,
+	// 			"leasetime":leasetime,
+	// };
 	
-	var jsonStr = JSON.stringify(jsonObjGet);
+	var setNum = 123;
+	var setStr = "abc";
+	var req_mode = "set";
+	var jsonObj = {
+
+				// "lan_ip":lan_ip,
+				// "dhcpd_en":dhcpd_en,
+				// "start_ip":start_ip,
+				// "end_ip":end_ip,
+				// "leasetime":leasetime
+				"req_mode":req_mode,
+				"setNum":setNum,
+				"setStr":setStr
+	};
+	var jsonStr = JSON.stringify(jsonObj);
 		//toJSONString
 		//processData:false,
 		
@@ -97,9 +111,11 @@ function set_lan_advance()
 		type:"POST",
 		url:"/json.cgi",
 		data:jsonStr,
+		contentType: "application/json",
 		dataType:"json",
 		success:function(jsonRet){
 			//traverse_json_obj(jsonRet);
+			console.log(jsonRet);
 			if(jsonRet.result == "success")
 			{
 				console.log("OK !");

@@ -23,7 +23,7 @@ SRC_PATH = $(TOP_PATH)
 
 LIB_PATH = $(TOP_PATH)/libs/cJSON
 LIB_INC_PATH = $(TOP_PATH)/libs/cJSON
-LIBS=-static -lcjson
+LIB_FLAG=-static -lcjson
 #find -maxdepth 3 -mindepth 1 -type d | grep -v .git |grep -v .
 DIRS = $(shell find $(SRC_PATH) -maxdepth 0 -mindepth 0 -type d | grep -v .git )
 FILES = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
@@ -50,26 +50,29 @@ INC_PATH += -I$(LIB_INC_PATH)
 INC_PATH += -I$(SRC_PATH)
 
 LD_LIB += -L$(LIB_PATH)
- 
-##########################################################
-# building
-##########################################################
-all: $(TARGET) 
- 
-$(TARGET) : $(OBJS_C) 
-	@ $(CC) $^ -o $@ $(LD_LIB) $(LIBS)
-#	@ echo libs_dir: $(LIBS_DIR)
-	@ echo Create $(TARGET) ok...
 
 ##########################################################
 # libs
 ##########################################################
 # libs:
+# 	@echo "making libs"
 # 	make -C $(LIB_PATH)
+##########################################################
+# building
+##########################################################
+all :$(TARGET)
+
+$(TARGET) : $(OBJS_C)
+	@ $(CC) $^ -o $@ $(LD_LIB) $(LIB_FLAG)
+#	@ echo libs_dir: $(LIBS_DIR)
+	@ echo Create $(TARGET) ok...
 
 $(OBJS_C):%.o : %.c
 	$(CC) -c $(CFLAGS) $< -o $@ $(INC_PATH)
- 
+
 .PHONY : clean
 clean:
 	@ $(RM) $(TARGET) $(OBJS_C)
+
+libs_clean:
+# 	make -C $(LIB_PATH) clean

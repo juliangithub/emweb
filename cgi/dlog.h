@@ -40,14 +40,51 @@
 #define ENDL                 "\e[0m\n"
 
 
-//#define DLOG_EN
+#define DLOG_EN
 
-#define dlog_warn(format, ...)   printf(HEAD DISPLAY_BLINK COLOR_BG_NONE COLOR_FT_YELLOW"Warning(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
-#define dlog_err(format, ...)   printf(HEAD DISPLAY_BLINK COLOR_BG_NONE COLOR_FT_RED"Error(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
+#define dlog_warn(format, ...)   {\
+		FILE *dlog; \
+		dlog = fopen("/var/log/cgic/debug", "a"); \
+		fprintf(dlog, "Warning:(%s %d )"format"\n", __FILE__, __LINE__,##__VA_ARGS__); \
+		fclose(dlog); \
+}
+
+#define dlog_err(format, ...)   {\
+		FILE *dlog; \
+		dlog = fopen("/var/log/cgic/debug", "a"); \
+		fprintf(dlog, "Error:(%s %d )"format"\n", __FILE__, __LINE__,##__VA_ARGS__); \
+		fclose(dlog); \
+}
+
+//#define dlog_warn(format, ...)   fprintf(stderr, HEAD DISPLAY_BLINK COLOR_BG_NONE COLOR_FT_YELLOW"Warning(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
+//#define dlog_err(format, ...)   fprintf(stderr, HEAD DISPLAY_BLINK COLOR_BG_NONE COLOR_FT_RED"Error(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
 #ifdef DLOG_EN
-    #define dlog_trace()                  printf(HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_BLUE"Trace: (%s %s %d )" ENDL, __FILE__, __FUNCTION__, __LINE__)
-    #define dlog_debug(format, ...)   printf(HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_PURPLE"Debug:(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
-    #define dlog_info(format, ...)   printf(HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_GREEN"Info:(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
+//    #define dlog_trace()                  fprintf(stderr, HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_BLUE"Trace: (%s %s %d )" ENDL, __FILE__, __FUNCTION__, __LINE__)
+//    #define dlog_debug(format, ...)   fprintf(stderr, HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_PURPLE"Debug:(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
+//    #define dlog_info(format, ...)   fprintf(stderr, HEAD DISPLAY_DEF COLOR_BG_NONE COLOR_FT_GREEN"Info:(%s %d )"format ENDL, __FILE__, __LINE__,##__VA_ARGS__)
+
+#define dlog_trace(format, ...)   {\
+		FILE *dlog; \
+		dlog = fopen("/var/log/cgic/debug", "a"); \
+		fprintf(dlog, "Trace:(%s %s %d )"format"\n", __FILE__, __FUNCTION__, __LINE__); \
+		fclose(dlog); \
+}
+
+#define dlog_debug(format, ...)   {\
+		FILE *dlog; \
+		dlog = fopen("/var/log/cgic/debug", "a"); \
+		fprintf(dlog, "Debug:(%s %d )"format"\n", __FILE__, __LINE__,##__VA_ARGS__); \
+		fclose(dlog); \
+}
+
+#define dlog_info(format, ...)   {\
+		FILE *dlog; \
+		dlog = fopen("/var/log/cgic/debug", "a"); \
+		fprintf(dlog, "Info:(%s %d )"format"\n", __FILE__, __LINE__,##__VA_ARGS__); \
+		fclose(dlog); \
+}
+
+
 #else
     #define dlog_trace()
     #define dlog_debug(format, ...)

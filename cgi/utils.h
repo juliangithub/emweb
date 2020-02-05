@@ -12,14 +12,7 @@
 #ifndef _UTILS_H
 #define _UTILS_H
 #include "dlog.h"
-typedef enum
-{
-	RET_SUCCESS = 0,
-	RET_FAILD = 1,
-	RET_INVALID_PARMT = 2,
-	RET_ERR_GENERAL = 3,
-}RET;
-
+#include "err.h"
 /** @def MAX(a, b)
   Computers the maximum of a and b. */
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
@@ -72,8 +65,16 @@ typedef struct mib_operations{
 //	printf("%s", (err_code==0)?"{\"result\":\"success\"}":"{\"result\":\"fail\"}"); 
 //	printf("%s", (err_code==0)?"{\"result\":\"success\"}":"{\"result\":\"fail\",\"file\":"__FILE__"\"line\":"__LINE__"}"); }
 
-#define JSON_RET(err_code) { \
-		printf("%s", (err_code==0)?"{\"result\":\"success\"}":"{\"result\":\"fail\"}"); }
+//#define JSON_RET(err_code) { \
+//		printf("%s", (err_code==0)?"{\"result\":\"success\"}":"{\"result\":\"fail\"}"); }
 
+static inline JSON_RET(int err_code){
+	if(ERR_NOERROR == err_code){
+		printf("{\"result\":\"success\"}");
+	}
+	else{
+		printf("{\"error number\":\"%d\"}", err_code);
+	}
+}
 
 #endif //UTILS_H

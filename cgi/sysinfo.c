@@ -11,6 +11,7 @@
 ================================================================*/
 #include "sysinfo.h"
 #include "utils.h"
+#include "err.h"
 
 #define NONE_CLIENT		"\"0.0.0.0\":\"00:00:00:00:00:00\""
 //#define NONE_CLIENT		"\"\":\"\""
@@ -151,10 +152,11 @@ int cpu_used_percent(void *paramt)
 	}
 	
 	total = user + system + nice + idle;
-	if(total == 0) return RET_FAILD;
+//	if(total == 0) return ERR_MEMORY;
 
-	sprintf(paramt, "%.2lf", 100.00*(user + system + nice)/total);
-	return RET_SUCCESS;
+//	sprintf(paramt, "%.2lf", 100.00*(user + system + nice)/total);
+	sprintf(paramt, "%d", 666);
+	return ERR_NOERROR;
 }
 
 
@@ -171,9 +173,10 @@ int ram_used_percent(void *paramt)
 		sscanf(line, "%*s %lu %lu", &total, &used);
 	}
 	
-	if(total == 0) return RET_FAILD;
-	sprintf(paramt, "%.2lf", 100.00*used/total);
-	return RET_SUCCESS;
+//	if(total == 0) return ERR_MEMORY;
+//	sprintf(paramt, "%.2lf", 100.00*used/total);
+	sprintf(paramt, "%d", 777);
+	return ERR_NOERROR;
 }
 
 

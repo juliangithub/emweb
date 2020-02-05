@@ -21,10 +21,6 @@ static MIB_OPERATIONS_S *find_ops_handles(MIB_OPERATIONS_S *object, const char *
 	MIB_OPERATIONS_S *idx = object;
 	
 	while(idx->name != NULL){
-//		if(!strncasecmp(idx->name, "req_mode", MAX(strlen(idx->name),strlen("req_mode"))))
-//		{
-//			continue;
-//		}
 		if(!strncasecmp(idx->name, string, MAX(strlen(idx->name),strlen(string)))){
 			dlog_debug("found the cell name: %s", idx->name);
 			return idx;
@@ -69,7 +65,6 @@ int set_jsonpkt(cJSON *object)
 	
 	for(idx = operations_table; (idx->name != NULL); idx++)
 	{
-	
 		element = cJSON_GetObjectItem(object, idx->name);
 		if(element == NULL){
 			continue;
@@ -95,7 +90,8 @@ int set_jsonpkt(cJSON *object)
 		}
 		else
 		{
-			json_ret = ERR_BADVALUE;
+			json_ret = ERR_INVALID_VALUE;
+			dlog_err("invalid value!!!");
 			return json_ret;
 		}
 
@@ -103,9 +99,9 @@ int set_jsonpkt(cJSON *object)
 		if(idx->mib_assert != NULL)
 		{
 			mib_ret = idx->mib_assert((void *)setVal);
-			if(mib_ret == 0)
+			if(mib_ret != ERR_NOERROR)
 			{
-				json_ret=  ERR_BADVALUE;
+				json_ret =  ERR_INVALID_VALUE;
 				return json_ret;
 			}
 		}
@@ -113,20 +109,20 @@ int set_jsonpkt(cJSON *object)
 		if(idx->mib_set!= NULL){
 			//some mib unit set no so simply as to update a value.need some special process.
 			mib_ret = idx->mib_set((void *)setVal);
-			if(NVRAM_FAILD== mib_ret)
+			if(mib_ret != ERR_NOERROR)
 			{
 				dlog_err("mib_set failed");
-				json_ret = ERR_MEMORY;
+				json_ret = mib_ret;
 				return json_ret;
 			}
 		}
 		else
 		{
 			mib_ret = nvram_set(idx->mib_index, (void *)setVal);
-			if(mib_ret == 0)	
+			if(mib_ret != ERR_NOERROR)	
 			{
 				dlog_err("mib_set failed");
-				json_ret = ERR_MEMORY;
+				json_ret = mib_ret;
 				return json_ret;
 			}
 		}
@@ -151,6 +147,11 @@ int get_jsonpkt(cJSON *json_obj, char *json_str, int max_length)
 	nBytes += snprintf(json_str+nBytes, max_length, "{");
 	for(c=json_obj->child; (c!=NULL&&c->string!=NULL&&c->type!=cJSON_Object); c=c->next)
 	{
+		if(!strncasecmp(c->string, "req_mode", MAX(strlen(c->string),strlen("req_mode"))))
+		{
+			continue;
+		}
+			
 		idx = find_ops_handles(operations_table, c->string);
 
 		if(idx == NULL)
@@ -172,7 +173,7 @@ int get_jsonpkt(cJSON *json_obj, char *json_str, int max_length)
 			mib_ret = nvram_get(idx->mib_index, (void *)mibVal);
 		}
 
-		if(mib_ret == NVRAM_FAILD)
+		if(mib_ret != ERR_NOERROR)
 		{
 			dlog_err("apmib_get Faild MIB index :%d", idx->mib_index);
 			json_ret = ERR_MEMORY;

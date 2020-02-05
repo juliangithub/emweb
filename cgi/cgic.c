@@ -288,6 +288,7 @@ int main(int argc, char *argv[]) {
 		}
 		else if (cgiStrEqNc(cgiContentType, "application/json")) {	
 //			fprintf(stderr, "cgiContentLength: %d\n", cgiContentLength);
+
 			CGIC_DLOG("cgiContentLength: %d\n", cgiContentLength);
 			CGIC_DLOG("cgiRequestMethod: %s\n", cgiRequestMethod);
 			CGIC_DLOG("cgiContentType: %s\n", cgiContentType);

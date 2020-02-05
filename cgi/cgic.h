@@ -250,7 +250,7 @@ cgiFormResultType cgiValueEscape(const char *s);
 	of error, cgiFormSuccess otherwise. */
 cgiFormResultType cgiValueEscapeData(const char *data, int len);
 extern int web_cgiUpload(void);
-#if 0
+#if 1
 #define CGIC_DLOG(format, ...)   {\
 		FILE *dlog; \
 		dlog = fopen("/var/log/cgic/debug", "a"); \
