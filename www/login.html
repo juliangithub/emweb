@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.base64.js"></script>
+<title>login </title>
+<style type="text/css"> 
+.dialog{
+	position:fixed; 
+	margin:auto; 
+	left:0; 
+	right:0; 
+	top:0; 
+	bottom:0; 
+	text-align:center; 
+	font-size: 14px;
+	width:720px; 
+	height:576px; 
+	border:1px solid #CCC; 
+	background-color:#F4F4F4; 
+	overflow:hidden;
+} 
+.dialog span {
+	font-size: 25px;
+}
+.logintb{
+	position: relative;
+	float: center;
+	margin: auto;
+	left: 0;
+	right: 0;
+	top: 55px;
+	bottom: 0;
+}
+.dialog .logintb tr td {
+	text-align: center;
+}
+
+.login_input {
+	height: 40px;
+	font-size: 20px;
+	text-align: center;
+	border:#FFF
+	border-radius: 6px;
+	padding-left: 10px;
+}
+
+.pwdPrompt_input {
+	height: 40px;
+	font-size: 20px;
+	text-align: center;
+	border:#FFF
+	border-radius: 6px;
+	padding-left: 10px;
+	color:#7B7B7B;
+}
+.login_btn{ 
+	width:50px; 
+	height:40px; 
+	font-size:20px; 
+	border:none; 
+	border-radius: 6px;
+	background:#0c74f1; 
+	cursor:pointer; 
+	color:#fff; 
+	font-weight:bold; 
+	margin:20px 0 40px 0;
+}
+.login_btn:hover{ background:#5aa70d;}
+</style> 
+<script language="javascript">
+
+$(document).ready(function() {
+	/*Add by julian,if the current window location is not top. cover any parent frame.*/
+    if(window.top != window.self)
+	{
+		window.top.location.href = window.self.location.href;
+	}	
+	
+	$("#pwdPrompt").focus(function() {
+	var text_value = $(this).val();
+	if (text_value == this.defaultValue) {
+		$("#pwdPrompt").hide();
+		$("#login_pwd").show().focus();
+	}
+	});
+	
+	$("#login_pwd").blur(function() {
+		var text_value = $(this).val();
+		if (text_value == "") {
+		$("#pwdPrompt").show();
+		$("#login_pwd").hide();
+		}
+	}); 
+	
+});
+	
+$(document).keyup(function(event){
+  if(event.keyCode ==13){
+    $("#login_submit").trigger("click");
+  }
+});
+
+
+function setCookie(c_name,value,expiredays)
+{
+	var exdate=new Date();
+	exdate.setTime(exdate.getDate()+expiredays);
+	document.cookie=c_name+ "=" + value
+	+((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+	+";path=/";
+}
+
+function login() {
+
+	var auth = $('#login_pwd').val();
+	if(auth == "")
+	{
+		$('#info').html("密码不能为空！");
+		return false;
+	}
+	else
+	{
+		$('#info').html("");
+	}
+	var b64_auth = $.base64.encode(auth)
+
+	//trashCookies();
+	setCookie('auth',"")
+	setCookie('auth',b64_auth)
+	
+	$.ajax({
+		type: "GET",
+		url: "index.html",
+		dataType: "html",
+		success: function(msg){
+			if(msg != ' '){
+				document.location.href='index.html';
+			}else{
+				alert("faild");
+			}
+		}
+
+	});
+	return true;
+} 
+</script>
+</head>
+<body>
+<div class="dialog">
+    <table cellpadding="20" cellspacing="0" width="40%" border="0" class="logintb">
+    	<tr>
+        <td><span >欢迎使用</span></td>
+        </tr>
+        <tr>
+        	<td>
+        		<img src="images/logo.png"  width="130px" height="130px">
+        	</td>
+        </tr>
+        <tr>
+        	<td>
+            	<img src="images/name.png" width="128px" height="128px">
+        	</td>
+        </tr>
+        <tr>
+        	<td>
+				<p id="info" style="color: red "></p>
+            	<input type="txt" name="pwdPrompt" id="pwdPrompt" class="pwdPrompt_input" value = "请输入管理密码" >
+				<input type="password" name="login_pwd"  id="login_pwd" class="login_input" style="display: none;">
+                <input type="button" name="login_submit" id="login_submit" value="&gt;"class="login_btn" onclick="login();">
+        	</td>
+        </tr>
+
+    </table>
+</div> 
+</body>
+</html>
