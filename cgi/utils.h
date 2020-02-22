@@ -13,6 +13,7 @@
 #define _UTILS_H
 #include "dlog.h"
 #include "err.h"
+
 /** @def MAX(a, b)
   Computers the maximum of a and b. */
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
@@ -24,7 +25,7 @@
 static inline int dump_buf(unsigned char *packet, int buf_len, char *filename, int line)
 {
 	printf("*****************%s %d*********************\n", filename, line);
-	printf("%s \n", packet);
+	printf("dump: %s \n", packet);
 	printf("**************************************\n");
 }
 
