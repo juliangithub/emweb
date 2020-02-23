@@ -1,0 +1,40 @@
+#pre-installation
+
+apt-get install byacc flex
+
+cd src
+./configure
+make
+
+cd boa_asp_jquery
+#install mime.types/boa.conf/index.html
+./install.sh
+
+
+#Error: resolve
+# /bin/ld: cannot find -lc
+# collect2: error: ld returned 1 exit status
+# make: *** [json.cgi] Error 1
+# /home/cqping/emweb
+# cp: cannot stat ¡®/home/cqping/emweb/cgi/json.cgi¡¯: No such file or directory
+yum install glibc-static
+#Network access deny
+iptables -I IN_public_allow -p tcp --dport=8080 -j ACCEPT
+iptables -I INPUT -p tcp --dport=8080 -j ACCEPT
+
+
+ # boa.c:226 - icky Linux kernel bug!: Success
+ # boa: server version Boa/0.94.13
+ # boa: server built Feb 22 2020 at 07:33:14.
+ # boa: starting server pid=8496, port 8080
+ # request from 192.168.230.1 "(null)" ("(null)"): connection timed out
+ # caught SIGHUP, restarting
+ # re-reading configuration files
+ # successful restart
+ # caught SIGHUP, restarting
+ # re-reading configuration files
+ # successful restart
+ # caught SIGTERM, starting shutdown
+ # exiting Boa normally (uptime 4866 seconds)
+ # boa.c:226 - icky Linux kernel bug!: Success
+ # boa.c:226 - icky Linux kernel bug!: Success
